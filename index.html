@@ -35,7 +35,15 @@
     async
     defer
     onerror="errorMap()"
-    src="https://maps.googleapis.com/maps/api/js?libraries=places,drawing,geometry&key=AIzaSyBL_hQHD9Z5RfTa7DQ16g1hQyNaUrmtzBk&v=3&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBL_hQHD9Z5RfTa7DQ16g1hQyNaUrmtzBk&v=3&callback=initMap">
+  </script>
+  <script>
+    function errorMap() {
+      alert("Unable to reach Google Maps");
+    }
+    function initMap() {
+      vm.initMap();
+    }
   </script>
 </body>
 </html>
