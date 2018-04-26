@@ -33,6 +33,10 @@ var Location = function(data) {
   this.addMarker = function(marker) {
     this.marker = marker;
   }
+  this.selected = false;
+  this.toggleSelected = function() {
+    this.selected = !this.selected;
+  }
 }
 
 var ViewModel = function() {
@@ -258,6 +262,9 @@ var ViewModel = function() {
     // Style the markers a bit. This will be our listing marker icon.
     var defaultIcon = self.makeMarkerIcon('0091ff');
 
+    // Style the markers a bit. This will be our listing marker icon.
+    var selectedIcon = self.makeMarkerIcon('ff0000');
+
     // Create a "highlisted location" marker color for when the user
     // mouses over the marker.
     var highlightedIcon = self.makeMarkerIcon('FFFF24');
@@ -282,13 +289,13 @@ var ViewModel = function() {
           });
           // Push the marker to our Location array.
           self.locationsList()[i].addMarker(marker);
-          // Extend the boundaries of the map for each marker
-          // bounds.extend(marker.position);
+
           // Create an onclick event to open an infowindow at each marker.
           marker.addListener('click', function() {
-            populateInfoWindow(this, largeInfowindow);
+            self.locationsList()[i].toggleSelected();
+            this.setIcon(selectedIcon);
+            // populateInfoWindow(this, largeInfowindow);
           });
-          // map.fitBounds(bounds);
 
           // Two event listeners - one for mouseover, one for mouseout,
           // to change the colors back and forth.
@@ -296,7 +303,11 @@ var ViewModel = function() {
             this.setIcon(highlightedIcon);
           });
           marker.addListener('mouseout', function() {
-            this.setIcon(defaultIcon);
+            if (self.locationsList()[i].selected) {
+              this.setIcon(selectedIcon);
+            } else {
+              this.setIcon(defaultIcon);
+            }
           });
         } else {
           alert('Unable to find  a result for: ' + address);
