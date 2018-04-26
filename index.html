@@ -10,6 +10,9 @@
 <body>
   <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" id="mySidebar">
     <button class="w3-bar-item w3-button w3-hide-large" data-bind="click: w3_close_sidebar">Close &times;</button>
+    <ul class="w3-ul" data-bind="foreach: locationsList">
+      <li class="w3-bar-item w3-button" data-bind="text: name, click: $parent.selectLocation"></li>
+    </ul>
   </div>
 
   <div class="w3-main">
