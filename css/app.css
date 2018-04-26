@@ -98,3 +98,19 @@
 .w3-ul li:last-child {
   border-bottom:none
 }
+
+/*/////////////////////////////////////////////////////////////////////
+// Google Maps related styles                                        //
+/////////////////////////////////////////////////////////////////////*/
+#map {
+  bottom: 0px;
+  height: 90%;
+  left: 300px;
+  position: absolute;
+  right: 0px;;
+}
+@media (max-width:992px) {
+  #map {
+    left: 0px;
+  }
+}
