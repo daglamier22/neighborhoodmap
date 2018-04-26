@@ -13,7 +13,10 @@
     <h3>My Neighborhood Map</h3>
     <input id="filter-text" type="text" placeholder="Filter by typing here" data-bind="textInput: filterValue">
     <ul class="w3-ul" data-bind="foreach: locationsList">
-      <li class="w3-bar-item w3-button" data-bind="text: name, click: $parent.selectLocation, visible: visible"></li>
+      <li
+        class="w3-bar-item w3-button"
+        data-bind="text: name, click: $parent.selectLocation, visible: visible, event: { mouseover: $parent.mouseoverMarker, mouseout: $parent.mouseoutMarker }">  
+      </li>
     </ul>
   </div>
 

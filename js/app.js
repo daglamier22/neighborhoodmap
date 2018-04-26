@@ -76,7 +76,8 @@ var ViewModel = function() {
 
   // handle clicks in sidebar
   this.selectLocation = function() {
-    console.log(this.name());
+    // console.log(this.name());
+    self.selectMarker(this);
   }
 
   this.initMap = function() {
@@ -260,14 +261,14 @@ var ViewModel = function() {
     });
 
     // Style the markers a bit. This will be our listing marker icon.
-    var defaultIcon = self.makeMarkerIcon('0091ff');
+    this.defaultIcon = self.makeMarkerIcon('0091ff');
 
     // Style the markers a bit. This will be our listing marker icon.
-    var selectedIcon = self.makeMarkerIcon('ff0000');
+    this.selectedIcon = self.makeMarkerIcon('ff0000');
 
     // Create a "highlisted location" marker color for when the user
     // mouses over the marker.
-    var highlightedIcon = self.makeMarkerIcon('FFFF24');
+    this.highlightedIcon = self.makeMarkerIcon('FFFF24');
 
     var placesService = new google.maps.places.PlacesService(self.map);
     // The following group uses the location array to create an array of markers on initialize.
@@ -283,7 +284,7 @@ var ViewModel = function() {
             map: self.map,
             position: position,
             title: initialLocations[i].name,
-            icon: defaultIcon,
+            icon: self.defaultIcon,
             animation: google.maps.Animation.DROP,
             id: self.locationsList()[i].id()
           });
@@ -292,22 +293,16 @@ var ViewModel = function() {
 
           // Create an onclick event to open an infowindow at each marker.
           marker.addListener('click', function() {
-            self.locationsList()[i].toggleSelected();
-            this.setIcon(selectedIcon);
-            // populateInfoWindow(this, largeInfowindow);
+            self.selectMarker(self.locationsList()[i]);
           });
 
           // Two event listeners - one for mouseover, one for mouseout,
           // to change the colors back and forth.
           marker.addListener('mouseover', function() {
-            this.setIcon(highlightedIcon);
+            self.mouseoverMarker(self.locationsList()[i]);
           });
           marker.addListener('mouseout', function() {
-            if (self.locationsList()[i].selected) {
-              this.setIcon(selectedIcon);
-            } else {
-              this.setIcon(defaultIcon);
-            }
+            self.mouseoutMarker(self.locationsList()[i]);
           });
         } else {
           alert('Unable to find  a result for: ' + address);
@@ -328,6 +323,25 @@ var ViewModel = function() {
       new google.maps.Size(21, 34)
     );
     return markerImage;
+  }
+
+  // This function handles mouseover of a marker
+  this.mouseoverMarker = function(location) {
+    location.marker.setIcon(self.highlightedIcon);
+  }
+  // This function handles mouseout of a marker
+  this.mouseoutMarker = function(location) {
+    if (location.selected) {
+      location.marker.setIcon(self.selectedIcon);
+    } else {
+      location.marker.setIcon(self.defaultIcon);
+    }
+  }
+  // This function handles selecting of a marker
+  this.selectMarker = function(location) {
+    location.marker.setIcon(location.selectedIcon);
+    location.toggleSelected();
+    // populateInfoWindow(this, largeInfowindow);
   }
 }
 let vm = new ViewModel();
