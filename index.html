@@ -8,10 +8,12 @@
   <link href="./css/app.css" rel="stylesheet">
 </head>
 <body>
-  <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" id="mySidebar">
+  <div class="w3-black w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" id="mySidebar">
     <button class="w3-bar-item w3-button w3-hide-large" data-bind="click: w3_close_sidebar">Close &times;</button>
+    <h3>My Neighborhood Map</h3>
+    <input id="filter-text" type="text" placeholder="Filter by typing here" data-bind="textInput: filterValue">
     <ul class="w3-ul" data-bind="foreach: locationsList">
-      <li class="w3-bar-item w3-button" data-bind="text: name, click: $parent.selectLocation"></li>
+      <li class="w3-bar-item w3-button" data-bind="text: name, click: $parent.selectLocation, visible: visible"></li>
     </ul>
   </div>
 
@@ -19,10 +21,7 @@
 
     <div>
       <div class="w3-container" style="float:left">
-        <h1>
-          <button class="w3-button w3-hide-large" style="float:left" data-bind="click: w3_open_sidebar">&#9776;</button>
-          My Neighborhood Map
-        </h1>
+        <button class="w3-button w3-hide-large" style="float:left" data-bind="click: w3_open_sidebar">&#9776;</button>
       </div>
     </div>
 

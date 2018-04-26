@@ -1,3 +1,9 @@
+#filter-text {
+  width: 70%;
+  position: relative;
+  margin: 8px 16px 8px 16px;
+}
+
 /*/////////////////////////////////////////////////////////////////////
 // Collapsing Sidebar layout: based on an example from W3Schools     //
 /////////////////////////////////////////////////////////////////////*/
@@ -5,7 +11,7 @@
   height:100%;
   width:300px;
   background-color:#fff;
-  position:fixed!important;
+  position:fixed !important;
   z-index:1;
   overflow:auto
 }
@@ -31,10 +37,10 @@
 }
 @media (min-width:993px) {
   .w3-hide-large {
-    display:none!important
+    display:none !important
   }
   .w3-sidebar.w3-collapse {
-    display:block!important
+    display:block !important
   }
 }
 @media (max-width:992px) {
@@ -42,7 +48,7 @@
     display:none
   }
   .w3-main {
-    margin-left:0!important;
+    margin-left:0 !important;
   }
 }
 .w3-bar-block .w3-bar-item {
@@ -75,8 +81,8 @@
   user-select:none
 }
 .w3-button:hover {
-  color:#000!important;
-  background-color:#ccc!important
+  color:#000 !important;
+  background-color:#ccc !important
 }
 .w3-container:after,.w3-container:before {
   content:"";
@@ -98,13 +104,17 @@
 .w3-ul li:last-child {
   border-bottom:none
 }
+.w3-black {
+  color:#eee !important;
+  background-color:#000 !important
+}
 
 /*/////////////////////////////////////////////////////////////////////
 // Google Maps related styles                                        //
 /////////////////////////////////////////////////////////////////////*/
 #map {
   bottom: 0px;
-  height: 90%;
+  height: 95%;
   left: 300px;
   position: absolute;
   right: 0px;;

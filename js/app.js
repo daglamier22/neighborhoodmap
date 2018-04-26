@@ -24,6 +24,7 @@ var initialLocations = [
 var Location = function(data) {
   this.name = ko.observable(data.name);
   this.address = ko.observable(data.address);
+  this.visible = ko.observable(true);
 }
 
 var ViewModel = function() {
@@ -31,9 +32,21 @@ var ViewModel = function() {
 
   // Create and fill the full locationsList
   this.locationsList = ko.observableArray([]);
-  initialLocations.forEach(function(item) {
+  initialLocations.forEach((item) => {
     self.locationsList.push(new Location(item));
   });
+
+  // Capture input for filter and filter the display list
+  this.filterValue = ko.observable('');
+  this.filterValue.subscribe(() => {
+    self.locationsList().forEach((item => {
+      if (item.name().toUpperCase().includes(self.filterValue().toUpperCase())) {
+        item.visible(true);
+      } else {
+        item.visible(false);
+      }
+    }));
+  })
 
   // These 2 functions are for opening and closing the sidebar when on a smaller screen
   this.w3_open_sidebar = function() {
