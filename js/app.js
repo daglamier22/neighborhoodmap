@@ -331,6 +331,7 @@ var ViewModel = function() {
   }
   // This function handles mouseout of a marker
   this.mouseoutMarker = function(location) {
+    // Put marker back to the way it was before mouseover
     if (location.selected) {
       location.marker.setIcon(self.selectedIcon);
     } else {
@@ -339,6 +340,11 @@ var ViewModel = function() {
   }
   // This function handles selecting of a marker
   this.selectMarker = function(location) {
+    // Unselect all markers
+    self.locationsList().forEach((item) => {
+      item.selected = false;
+      item.marker.setIcon(self.defaultIcon);
+    });
     location.marker.setIcon(location.selectedIcon);
     location.toggleSelected();
     // populateInfoWindow(this, largeInfowindow);
