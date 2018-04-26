@@ -1,24 +1,28 @@
 var initialLocations = [
   {
-    name: 'Tabby',
-    address: 'img/434164568_fea0ad4013_z.jpg',
+    name: 'On The Border Mexican Grill & Cantina',
+    address: '213 N Central Expy, Allen, TX 75013',
   },
   {
-    name: 'Tiger',
-    address: 'img/434164568_fea0ad4013_z.jpg',
+    name: 'Chipotle Mexican Grill',
+    address: '103 N Central Expy, Allen, TX 75013',
   },
   {
-    name: 'Scaredy',
-    address: 'img/434164568_fea0ad4013_z.jpg',
+    name: 'Dr E T Boon Elementary School',
+    address: '1050 Comanche Dr, Allen, TX 75013',
   },
   {
-    name: 'Shadow',
-    address: 'img/434164568_fea0ad4013_z.jpg',
+    name: 'Tom Thumb',
+    address: '900 W McDermott Dr, Allen, TX 75013',
   },
   {
-    name: 'Sleepy',
-    address: 'img/434164568_fea0ad4013_z.jpg',
+    name: 'RaceTrac',
+    address: '840 W Exchange Pkwy, Allen, TX 75013',
   },
+  {
+    name: 'Kwik Kar of Allen',
+    address: '400 W McDermott Dr, Allen, TX 75013'
+  }
 ];
 
 var Location = function(data) {
