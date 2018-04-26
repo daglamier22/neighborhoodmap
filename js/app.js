@@ -29,7 +29,7 @@ var Location = function(data) {
   this.name = ko.observable(data.name);
   this.address = ko.observable(data.address);
   this.id = ko.observable(data.id);
-  this.visible = ko.observable(true);
+  this.visible = ko.observable(false);
   this.addMarker = function(marker) {
     this.marker = marker;
   }
@@ -43,7 +43,8 @@ var ViewModel = function() {
   var self = this;
 
   // Create the map variable and a new blank array for all the location markers.
-  var map;
+  this.map;
+  this.largeInfowindow;
 
   // Create and fill the full locationsList
   self.locationsList = ko.observableArray([]);
@@ -260,6 +261,11 @@ var ViewModel = function() {
       mapTypeControl: false
     });
 
+    // Make all locations visible now that google maps has loaded
+    self.locationsList().forEach((item) => item.visible(true));
+
+    self.largeInfowindow = new google.maps.InfoWindow();
+
     // Style the markers a bit. This will be our listing marker icon.
     this.defaultIcon = self.makeMarkerIcon('0091ff');
 
@@ -327,27 +333,78 @@ var ViewModel = function() {
 
   // This function handles mouseover of a marker
   this.mouseoverMarker = function(location) {
-    location.marker.setIcon(self.highlightedIcon);
+    if (location.marker != undefined) {
+      location.marker.setIcon(self.highlightedIcon);
+    }
   }
   // This function handles mouseout of a marker
   this.mouseoutMarker = function(location) {
-    // Put marker back to the way it was before mouseover
-    if (location.selected) {
-      location.marker.setIcon(self.selectedIcon);
-    } else {
-      location.marker.setIcon(self.defaultIcon);
+    if (location.marker != undefined) {
+      // Put marker back to the way it was before mouseover
+      if (location.selected) {
+        location.marker.setIcon(self.selectedIcon);
+      } else {
+        location.marker.setIcon(self.defaultIcon);
+      }
     }
   }
   // This function handles selecting of a marker
   this.selectMarker = function(location) {
-    // Unselect all markers
-    self.locationsList().forEach((item) => {
-      item.selected = false;
-      item.marker.setIcon(self.defaultIcon);
-    });
-    location.marker.setIcon(location.selectedIcon);
-    location.toggleSelected();
-    // populateInfoWindow(this, largeInfowindow);
+    if (location.marker != undefined) {
+      // Unselect all markers
+      self.locationsList().forEach((item) => {
+        item.selected = false;
+        item.marker.setIcon(self.defaultIcon);
+      });
+      location.marker.setIcon(location.selectedIcon);
+      location.toggleSelected();
+      self.populateInfoWindow(this, self.largeInfowindow);
+    }
+  }
+
+  // This function populates the infowindow when the marker is clicked. We'll only allow
+  // one infowindow which will open at the marker that is clicked, and populate based
+  // on that markers position.
+  this.populateInfoWindow = function(marker, infowindow) {
+    // Check to make sure the infowindow is not already opened on this marker.
+    if (infowindow.marker != marker) {
+      infowindow.marker = marker;
+      infowindow.setContent('');
+      infowindow.open(map, marker);
+      // Make sure the marker property is cleared if the infowindow is closed.
+      infowindow.addListener('closeclick', function() {
+        infowindow.setMarker(null);
+      });
+      // var streetViewService = new google.maps.StreetViewService();
+    //   var radius = 50;
+    //   // In case the status is OK, which means the pano was found, compute the
+    //   // position of the streetview image, then calculate the heading, then get a
+    //   // panorama from that and set the options
+    //   function getStreetView(data, status) {
+    //     if (status == google.maps.StreetViewStatus.OK) {
+    //       var nearStreetViewLocation = data.location.latLng;
+    //       var heading = google.maps.geometry.spherical.computeHeading(
+    //         nearStreetViewLocation, marker.position);
+    //       infowindow.setContent('<div>' + marker.title + '</div><div id="pano">test</div>');
+    //       var panoramaOptions = {
+    //         position: nearStreetViewLocation,
+    //         pov: {
+    //           heading: heading,
+    //           pitch: 30
+    //         }
+    //       };
+    //       var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+    //     } else {
+    //       infowindow.setContent('<div>' + marker.title + '</div>' +
+    //         '<div>No Street View Found</div>');
+    //     }
+    //   }
+    //   // Use streetview service to get the closest streetview image within
+    //   // 50 meters of the markers position
+    //   streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+      // Open the infowindow on the correct marker.
+      infowindow.open(map, marker);
+    }
   }
 }
 let vm = new ViewModel();
