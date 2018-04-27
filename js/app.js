@@ -21,7 +21,7 @@ var initialLocations = [
   },
   {
     name: 'Kwik Kar of Allen',
-    address: '400 W McDermott Dr, Allen, TX 75013'
+    address: '400 W McDermott Dr, Allen, TX 75013',
   }
 ];
 
@@ -285,6 +285,7 @@ var ViewModel = function() {
       }, function(results, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           var position = results[0].geometry.location;
+          self.locationsList()[i].location = position;
           // Create a marker per location, and put into Location array.
           var marker = new google.maps.Marker({
             map: self.map,
@@ -358,19 +359,19 @@ var ViewModel = function() {
       });
       location.marker.setIcon(location.selectedIcon);
       location.toggleSelected();
-      self.populateInfoWindow(location.marker, self.largeInfowindow);
+      self.populateInfoWindow(location, self.largeInfowindow);
     }
   }
 
   // This function populates the infowindow when the marker is clicked. We'll only allow
   // one infowindow which will open at the marker that is clicked, and populate based
   // on that markers position.
-  this.populateInfoWindow = function(marker, infowindow) {
+  this.populateInfoWindow = function(location, infowindow) {
     // Check to make sure the infowindow is not already opened on this marker.
-    if (infowindow.marker != marker) {
-      infowindow.marker = marker;
+    if (infowindow.marker != location.marker) {
+      infowindow.marker = location.marker;
       infowindow.setContent('');
-      infowindow.open(self.map, marker);
+      infowindow.open(self.map, location.marker);
       // Make sure the marker property is cleared if the infowindow is closed.
       infowindow.addListener('closeclick', function() {
         infowindow.setMarker = null;
@@ -384,8 +385,8 @@ var ViewModel = function() {
         if (status == google.maps.StreetViewStatus.OK) {
           var nearStreetViewLocation = data.location.latLng;
           var heading = google.maps.geometry.spherical.computeHeading(
-            nearStreetViewLocation, marker.position);
-          infowindow.setContent('<div>' + marker.title + '</div><div id="pano">test</div>');
+            nearStreetViewLocation, location.marker.position);
+          infowindow.setContent(infowindow.getContent() + '<div id="pano"></div>');
           var panoramaOptions = {
             position: nearStreetViewLocation,
             pov: {
@@ -395,15 +396,34 @@ var ViewModel = function() {
           };
           var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
         } else {
-          infowindow.setContent('<div>' + marker.title + '</div>' +
-            '<div>No Street View Found</div>');
+          infowindow.setContent(infowindow.getContent() + '<div>No Street View Found</div>');
         }
       }
-      // Use streetview service to get the closest streetview image within
-      // 50 meters of the markers position
-      streetViewService.getPanoramaByLocation(marker.position, radius, getStreetView);
+
+      // Retrieve FourSquare info
+      fetch(`https://api.foursquare.com/v2/venues/explore?client_id=H3JQBA0NQC1TBMNOU4BXK45FNHRMZEOFN5HV3WHQUEA1COXN&client_secret=YO3IZO5KNRDXPAVOYJWUUORL4WIGVM5FQ42J34ZYSA5BMY4Y&ll=${location.location.lat()},${location.location.lng()}&query=${location.name()}&v=20180323&limit=1`)
+      .then(response => response.json())
+      .then((results) => {
+        infowindow.setContent(infowindow.getContent() + '<div><center><strong>' + location.marker.title + '</strong></center></div>' +
+        '<br><div><img style="background-color: #0091ff; float: left" src="' + results.response.groups[0].items[0].venue.categories[0].icon.prefix + '32' + results.response.groups[0].items[0].venue.categories[0].icon.suffix + '">' +
+        '<div>' + results.response.groups[0].items[0].venue.categories[0].name +
+        '<br>' + results.response.groups[0].items[0].venue.location.formattedAddress[0] + ' ' +
+        results.response.groups[0].items[0].venue.location.formattedAddress[1] + '</div></div>' +
+        '<img src="./img/Powered-by-Foursquare-full-color-300.png" alt="' + location.marker.title + '" width="250"><hr>');
+
+      })
+      .catch(e => {
+        infowindow.setContent(infowindow.getContent() + '<div><center><strong>' + location.marker.title + '</strong></center></div>' +
+          '<div>No Foursquare Details Found</div><hr>');
+      })
+      .then(() => {
+        // Use streetview service to get the closest streetview image within
+        // 50 meters of the markers position
+        streetViewService.getPanoramaByLocation(location.marker.position, radius, getStreetView);
+      });
+
       // Open the infowindow on the correct marker.
-      infowindow.open(map, marker);
+      infowindow.open(map, location.marker);
     }
   }
 }
