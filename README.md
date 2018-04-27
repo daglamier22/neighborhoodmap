@@ -25,6 +25,8 @@ Map and related functionality provided by Google Maps: https://developers.google
 
 Map style is the WY style from Snazzy Maps: https://snazzymaps.com/style/8097/wy
 
+Info Windows are also displaying Foursquare 'explore' API result data: https://developer.foursquare.com/docs/api/venues/explore
+
 ## Contributing
 
 This repository is my version of a project for _all_ Udacity students taking the Front End Web Developer Nanodegree. Therefore, I most likely will not accept pull requests.
